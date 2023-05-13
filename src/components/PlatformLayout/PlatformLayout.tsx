@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import {
   DesktopOutlined,
   FileOutlined,
@@ -46,7 +46,7 @@ const items: MenuItem[] | null = [
   // ]),
 ];
 type Props = {
-  children: string | JSX.Element | JSX.Element[];
+  children: ReactNode;
 };
 
 const PlatformLayout = ({ children }: Props) => {
