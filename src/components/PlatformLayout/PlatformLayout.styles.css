@@ -1,0 +1,35 @@
+.platform-layout {
+  min-height: 100vh;
+}
+.admin-hero {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.platform-layout-content{
+    margin: 0 16px
+}.platform-layout-children{
+    padding: 24px;
+    min-height: 100%;
+}
+.platform-layout-footer{
+    text-align: center;
+}
+.breadcrum{
+    margin: 10px 0;
+}
+.platform-site-layout-header{
+    padding: 0;
+}
+.platform-site-layout-header-div{
+    margin-left: 32px;
+    padding-left: 8px;
+}
+.platform-site-layout-header-span{
+    font-weight: 500;
+}
