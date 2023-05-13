@@ -3,6 +3,7 @@ import AntTable from "../../components/AntTable/AntTable";
 import { categories } from "../../constants";
 import { IOrdersData } from "./Orders.interface";
 import { IProduct } from "../../utils/common.interface";
+import { formatDateTime } from "../../utils/common.util";
 
 const Orders = () => {
   const columns: ColumnsType<IOrdersData> = [
@@ -44,7 +45,7 @@ const Orders = () => {
     };
     data.push({
       key: i,
-      date: new Date().toUTCString(),
+      date: formatDateTime(new Date().toISOString()),
       paid: "NO",
       products: [product, product],
       recipient: "Ramu", // TODO: recipient should show name,address,phone and email
