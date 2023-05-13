@@ -1,0 +1,9 @@
+.total-sales {
+  font-weight: "bolder";
+  font-size: 24;
+  padding: "16px 0px";
+  color: "#1B3375";
+}
+.card{
+    min-width: 30%;
+}

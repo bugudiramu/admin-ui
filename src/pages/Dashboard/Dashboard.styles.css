@@ -1,0 +1,10 @@
+.dashboard-row{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+    text-align: center;
+}
+.dashboard-h1{
+    margin-top: 16px;
+}
