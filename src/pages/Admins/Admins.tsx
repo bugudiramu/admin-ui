@@ -1,7 +1,6 @@
 import { ColumnsType } from "antd/es/table";
 import AntTable from "../../components/AntTable/AntTable";
 import { Button, Form, Input, Space } from "antd";
-import { categories } from "../../constants";
 import { IAdminData } from "./Admins.interface";
 import { formatDateTime } from "../../utils/common.util";
 
@@ -33,7 +32,7 @@ const Admins = () => {
   const data: IAdminData[] = [];
   for (let i = 1; i <= 4; i++) {
     data.push({
-      key: i,
+      key: `${i}`,
       adminEmail: "ramubugudi4@gmail.com",
       date: formatDateTime(new Date().toISOString()),
     });

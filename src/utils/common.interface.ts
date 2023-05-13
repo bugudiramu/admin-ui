@@ -1,8 +1,11 @@
 export interface IBase {
-  key: number;
+  key: string;
 }
 export interface ICategory {
-  name: string;
+  id: string;
+  title: string;
+  description: string;
+  image: string;
 }
 
 export interface IProduct {
@@ -11,4 +14,16 @@ export interface IProduct {
   price: number;
   description: string;
   category: ICategory;
+}
+
+export interface IAdmin {
+  email: string;
+}
+
+export enum API_METHODS {
+  GET = "GET",
+  POST = "POST",
+  PUT = "PUT",
+  DELETE = "DELETE",
+  PATCH = "PATCH",
 }
