@@ -26,6 +26,7 @@ const AntTable = <T extends object>({ columns, data }: IProps<T>) => {
         columns={tableColumns}
         dataSource={hasData ? data : []}
         scroll={scroll}
+        rowKey="id"
       />
     </>
   );
