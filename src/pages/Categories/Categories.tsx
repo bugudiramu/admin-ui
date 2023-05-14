@@ -1,21 +1,56 @@
 import { ColumnsType } from "antd/es/table";
 import AntTable from "../../components/AntTable/AntTable";
-import { Button, Form, Input, Space, Spin } from "antd";
+import { Button, Form, Input, Space, Spin, message } from "antd";
 import { ICategoryData } from "./Category.interface";
 import {
   useCreateCategoryMutation,
+  useDeleteCategoryMutation,
   useGetCategoriesQuery,
 } from "./Categories.api";
-import { ICategory } from "../../utils/common.interface";
+import { IBaseError, ICategory } from "../../utils/common.interface";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { toggleModal } from "../../components/AntModal/AntModal.slice";
+import AntModal from "../../components/AntModal/AntModal";
+import { DELETE_TEXT } from "../../constants";
 
 const Categories = () => {
   const [form] = Form.useForm();
-  const { isLoading, isError, data: categories } = useGetCategoriesQuery();
+  const navigate = useNavigate();
+  const {
+    isLoading,
+    isError: isCreationError,
+    data: categories,
+  } = useGetCategoriesQuery();
 
   const [createCategory, { isLoading: isCreatingCategory }] =
     useCreateCategoryMutation();
 
-  console.log({ categories, isLoading });
+  const [deleteCategory, { isError: isDeletionError, error }] =
+    useDeleteCategoryMutation();
+
+  const dispatch = useDispatch();
+
+  const [deletableCategory, setDeletableCategory] = useState<string>("");
+
+  const [messageApi, contextHolder] = message.useMessage();
+
+
+  useEffect(() => {
+    if (isDeletionError) {
+      const errorMessage = error as IBaseError;
+      if (errorMessage.status) {
+        messageApi.error(errorMessage.data.error.message);
+      }
+    }
+  }, [error, isDeletionError, messageApi]);
+
+  const handleDeleteCategory = async (id: string) => {
+    dispatch(toggleModal(true));
+    setDeletableCategory(id);
+  };
 
   const columns: ColumnsType<ICategoryData> = [
     {
@@ -26,25 +61,36 @@ const Categories = () => {
       title: "Action",
       key: "action",
       sorter: true,
-      render: () => (
-        <Space size="middle">
-          <Button type="link">Edit</Button>
-          <Button danger type="link">
-            Delete
-          </Button>
-        </Space>
-      ),
+      render: (value: ICategoryData, record, index: number) => {
+        return (
+          <Space size="middle">
+            <Button
+              onClick={() => navigate(`/categories/${value.categoryName}`)}
+              type="link"
+            >
+              Edit
+            </Button>
+            <Button
+              onClick={() => handleDeleteCategory(record.key)}
+              danger
+              type="link"
+            >
+              Delete
+            </Button>
+          </Space>
+        );
+      },
     },
   ];
 
   if (isLoading) return <Spin spinning={isLoading}></Spin>;
 
-  if (isError) throw new Error("Something went wrong...");
+  if (isCreationError) throw new Error("Something went wrong...");
 
   const data: ICategoryData[] = [];
   for (const category of categories?.categories as ICategory[]) {
     data.push({
-      key: category["id"],
+      key: category["_id"],
       categoryName: category["title"],
     });
   }
@@ -61,6 +107,13 @@ const Categories = () => {
 
   return (
     <div>
+      {contextHolder}
+      <AntModal
+        text={DELETE_TEXT}
+        handleSubmit={async () =>
+          await deleteCategory(deletableCategory).unwrap()
+        }
+      />
       {/* Add new category */}
       <Form form={form} layout="vertical" requiredMark={true}>
         <Form.Item
@@ -83,7 +136,6 @@ const Categories = () => {
             </Button>
             <Button
               onClick={() => {
-                console.log({ form });
                 form.resetFields();
               }}
             >

@@ -56,7 +56,6 @@ const Admins = () => {
             </Button>
             <Button
               onClick={() => {
-                console.log({ form });
                 form.resetFields();
               }}
             >

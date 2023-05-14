@@ -2,7 +2,7 @@ export interface IBase {
   key: string;
 }
 export interface ICategory {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   image: string;
@@ -18,6 +18,18 @@ export interface IProduct {
 
 export interface IAdmin {
   email: string;
+}
+
+export interface IBaseError {
+  data: IError;
+  status: number;
+}
+export interface IError {
+  success: boolean;
+  error: IMessage;
+}
+export interface IMessage {
+  message: string;
 }
 
 export enum API_METHODS {

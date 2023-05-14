@@ -12,7 +12,7 @@ import {
 import type { MenuProps } from "antd";
 import "./PlatformLayout.styles.css";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { MenuItemType } from "antd/es/menu/hooks/useItems";
 const { Header, Content, Footer, Sider } = Layout;
 type MenuItem = Required<MenuItemType>[][number];
@@ -56,6 +56,24 @@ const PlatformLayout = ({ children }: Props) => {
   } = theme.useToken();
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const locations = location.pathname.split("/");
+  const breadcrumbs = locations.slice(1, locations.length).map((val) => {
+    return {
+      title: (
+        <a
+          onClick={(e: React.MouseEvent) => {
+            e.preventDefault();
+            navigate(`/${val}`);
+          }}
+          href=""
+        >
+          {val}
+        </a>
+      ),
+    };
+  });
 
   return (
     <Layout className="platform-layout">
@@ -80,7 +98,6 @@ const PlatformLayout = ({ children }: Props) => {
           mode="inline"
           items={items}
           onClick={({ key }) => {
-            console.log({ key });
             if (+key === 1) return navigate("/");
             const pathName = items[+key - 1]?.label?.toString()?.toLowerCase();
             return navigate(`/${pathName}`);
@@ -98,7 +115,7 @@ const PlatformLayout = ({ children }: Props) => {
           </div>
         </Header>
         <Content className="platform-layout-content">
-          <Breadcrumb className="breadcrum"></Breadcrumb>
+          <Breadcrumb className="breadcrumb" items={breadcrumbs} />
           <div
             className="platform-layout-children"
             style={{

@@ -24,12 +24,12 @@ export const categoriesApi = createApi({
           ? // successful query
             [
               ...result.categories.map(
-                ({ id }) => ({ type: "Categories", id } as const)
+                ({ _id }) => ({ type: "Categories", _id } as const)
               ),
-              { type: "Categories", id: "LIST" },
+              { type: "Categories", _id: "LIST" },
             ]
           : // an error occurred, but we still want to refetch this query when `{ type: 'Categories', id: 'LIST' }` is invalidated
-            [{ type: "Categories", id: "LIST" }],
+            [{ type: "Categories", _id: "LIST" }],
       // transformResponse: (response: {
       //   categories: ICategory[];
       //   success: boolean;
@@ -39,8 +39,8 @@ export const categoriesApi = createApi({
     }),
     getCategory: builder.query({
       query: (id) => ({ url: routes.v1.categories, params: { id } }),
-      providesTags: (_result, _error, id) => {
-        return [{ type: "Categories", id }];
+      providesTags: (_result, _error, _id) => {
+        return [{ type: "Categories", _id }];
       },
       // transformResponse: (response) => {
       //   return response;
@@ -57,32 +57,34 @@ export const categoriesApi = createApi({
       },
       // Invalidates all Categories-type queries providing the `LIST` id - after all, depending of the sort order,
       // that newly created Category could show up in any lists.
-      invalidatesTags: [{ type: "Categories", id: "LIST" }],
+      invalidatesTags: (_result, _error, _id) => {
+        return [{ type: "Categories", _id }];
+      },
     }),
 
     updateCategory: builder.mutation<ICategory, Partial<ICategory>>({
       query(data) {
-        const { id, ...body } = data;
+        const { _id, ...body } = data;
         return {
-          url: `${routes.v1.categories}/${id}`,
+          url: `${routes.v1.categories}/${_id}`,
           method: API_METHODS.PUT,
           body,
         };
       },
-      invalidatesTags: (_result, _error, { id }) => {
-        return [{ type: "Categories", id }];
+      invalidatesTags: (_result, _error, { _id }) => {
+        return [{ type: "Categories", _id }];
       },
     }),
 
-    deleteCategory: builder.mutation<{ success: boolean; id: number }, number>({
+    deleteCategory: builder.mutation<{ success: boolean; id: string }, string>({
       query(id) {
         return {
           url: `${routes.v1.categories}/${id}`,
           method: API_METHODS.DELETE,
         };
       },
-      invalidatesTags: (_result, _error, id) => {
-        return [{ type: "Categories", id }];
+      invalidatesTags: (_result, _error, _id) => {
+        return [{ type: "Categories", _id }];
       },
     }),
   }),

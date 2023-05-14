@@ -7,6 +7,7 @@ import Categories from "./pages/Categories/Categories";
 import Orders from "./pages/Orders/Orders";
 import Admins from "./pages/Admins/Admins";
 import Settings from "./pages/Settings/Settings";
+import CategoryDetail from "./pages/CategoryDetail/CategoryDetail";
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
           <Route path="/" element={<Dashboard />} />
           <Route path="/products" element={<Products />} />
           <Route path="/categories" element={<Categories />} />
+          <Route path="/categories/:id" element={<CategoryDetail />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/admins" element={<Admins />} />
           <Route path="/settings" element={<Settings />} />
