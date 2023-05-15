@@ -9,9 +9,8 @@ import {
 } from "./Categories.api";
 import { IBaseError, ICategory } from "../../utils/common.interface";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { toggleModal } from "../../components/AntModal/AntModal.slice";
 import AntModal from "../../components/AntModal/AntModal";
 import { DELETE_TEXT } from "../../constants";
@@ -19,33 +18,17 @@ import { DELETE_TEXT } from "../../constants";
 const Categories = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const {
-    isLoading,
-    isError: isCreationError,
-    data: categories,
-  } = useGetCategoriesQuery();
+  const { isLoading, data: categories, isError } = useGetCategoriesQuery();
 
   const [createCategory, { isLoading: isCreatingCategory }] =
     useCreateCategoryMutation();
-
-  const [deleteCategory, { isError: isDeletionError, error }] =
-    useDeleteCategoryMutation();
+  const [deleteCategory] = useDeleteCategoryMutation();
 
   const dispatch = useDispatch();
 
   const [deletableCategory, setDeletableCategory] = useState<string>("");
 
   const [messageApi, contextHolder] = message.useMessage();
-
-
-  useEffect(() => {
-    if (isDeletionError) {
-      const errorMessage = error as IBaseError;
-      if (errorMessage.status) {
-        messageApi.error(errorMessage.data.error.message);
-      }
-    }
-  }, [error, isDeletionError, messageApi]);
 
   const handleDeleteCategory = async (id: string) => {
     dispatch(toggleModal(true));
@@ -65,7 +48,13 @@ const Categories = () => {
         return (
           <Space size="middle">
             <Button
-              onClick={() => navigate(`/categories/${value.categoryName}`)}
+              onClick={() =>
+                navigate(`/categories/${value.categoryName}`, {
+                  state: {
+                    category: record,
+                  },
+                })
+              }
               type="link"
             >
               Edit
@@ -85,7 +74,7 @@ const Categories = () => {
 
   if (isLoading) return <Spin spinning={isLoading}></Spin>;
 
-  if (isCreationError) throw new Error("Something went wrong...");
+  if (isError) return messageApi.error("something wen't wrong...");
 
   const data: ICategoryData[] = [];
   for (const category of categories?.categories as ICategory[]) {
@@ -97,11 +86,19 @@ const Categories = () => {
 
   const handleCategoryCreation = async () => {
     const { categoryName = "" } = form.getFieldsValue();
+    if (!categoryName || categoryName?.length < 3) {
+      return messageApi.error(
+        "Category name should have atleast 3 characters..."
+      );
+    }
     await createCategory({
       title: categoryName,
       description: "These are different types of Sarees",
       image: "image url",
-    }).unwrap();
+    })
+      .unwrap()
+      .then(() => messageApi.success("Category created successfully"))
+      .catch((error: IBaseError) => messageApi.error(error.data.error.message));
     form.resetFields();
   };
 
@@ -111,7 +108,12 @@ const Categories = () => {
       <AntModal
         text={DELETE_TEXT}
         handleSubmit={async () =>
-          await deleteCategory(deletableCategory).unwrap()
+          await deleteCategory(deletableCategory)
+            .unwrap()
+            .then(() => messageApi.success("Category deleted success"))
+            .catch((error: IBaseError) =>
+              messageApi.error(error.data.error.message)
+            )
         }
       />
       {/* Add new category */}
