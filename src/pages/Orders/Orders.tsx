@@ -27,7 +27,6 @@ const Orders = () => {
           (product, idx) =>
             `${product.title} ${idx !== products.length - 1 ? "," : ""} `
         );
-        console.log(JSON.stringify(products));
         return productNames;
       },
     },

@@ -6,3 +6,5 @@ export const categories = [
 ];
 
 export const BASE_URL = "http://localhost:5001/api"
+
+export const DELETE_TEXT = "Are you sure delete this?"

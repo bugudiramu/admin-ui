@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
+    "@types/react-router-dom": "^5.3.3",
     "antd": "^5.4.6",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
