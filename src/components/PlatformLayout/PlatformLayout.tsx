@@ -78,6 +78,7 @@ const PlatformLayout = ({ children }: Props) => {
   return (
     <Layout className="platform-layout">
       <Sider
+      className="platform-layout-sider"
         collapsible
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
