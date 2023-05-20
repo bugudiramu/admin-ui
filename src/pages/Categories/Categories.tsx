@@ -9,7 +9,7 @@ import {
 } from "./Categories.api";
 import { IBaseError, ICategory } from "../../utils/common.interface";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { toggleModal } from "../../components/AntModal/AntModal.slice";
 import AntModal from "../../components/AntModal/AntModal";
@@ -18,7 +18,12 @@ import { DELETE_TEXT } from "../../constants";
 const Categories = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const { isLoading, data: categories, isError } = useGetCategoriesQuery();
+  const {
+    isLoading,
+    data: categories,
+    isError,
+    isSuccess,
+  } = useGetCategoriesQuery();
 
   const [createCategory, { isLoading: isCreatingCategory }] =
     useCreateCategoryMutation();
@@ -72,17 +77,22 @@ const Categories = () => {
     },
   ];
 
+  const sortCategories: ICategoryData[] = useMemo(() => {
+    const sortedCategories = categories?.categories?.slice() as ICategory[];
+    sortedCategories?.sort((a, b) =>
+      a.title.localeCompare(b.title)
+    );
+    return sortedCategories?.map((category) => {
+      return {
+        key: category["_id"],
+        categoryName: category["title"],
+      };
+    });
+  }, [categories?.categories]);
+
   if (isLoading) return <Spin spinning={isLoading}></Spin>;
 
   if (isError) return messageApi.error("something wen't wrong...");
-
-  const data: ICategoryData[] = [];
-  for (const category of categories?.categories as ICategory[]) {
-    data.push({
-      key: category["_id"],
-      categoryName: category["title"],
-    });
-  }
 
   const handleCategoryCreation = async () => {
     const { categoryName = "" } = form.getFieldsValue();
@@ -146,7 +156,7 @@ const Categories = () => {
           </Space>
         </Form.Item>
       </Form>
-      <AntTable columns={columns} data={data} />
+      {isSuccess && <AntTable columns={columns} data={sortCategories} />}
     </div>
   );
 };
