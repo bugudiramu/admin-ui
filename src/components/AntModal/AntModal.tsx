@@ -5,10 +5,11 @@ import { RootState } from "../../redux/store";
 
 interface IProps {
   text: string;
-  handleSubmit: () => void
+  handleSubmit: () => void;
+  children?: React.ReactNode;
 }
 
-const AntModal = ({ text, handleSubmit }: IProps) => {
+const AntModal = ({ text, handleSubmit, children }: IProps) => {
   const isModalOpen = useSelector(
     (state: RootState) => state.antModal.isModalOpen
   );
@@ -16,7 +17,7 @@ const AntModal = ({ text, handleSubmit }: IProps) => {
   const dispatch = useDispatch();
 
   const handleOk = () => {
-    handleSubmit()
+    handleSubmit();
     dispatch(toggleModal(false));
   };
 
@@ -26,12 +27,13 @@ const AntModal = ({ text, handleSubmit }: IProps) => {
 
   return (
     <Modal
+      maskClosable={false}
       title={text}
       open={isModalOpen}
       onOk={handleOk}
       onCancel={handleCancel}
     >
-      {/* <p>{text}</p> */}
+      {children}
     </Modal>
   );
 };

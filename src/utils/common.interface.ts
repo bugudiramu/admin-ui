@@ -9,11 +9,15 @@ export interface ICategory {
 }
 
 export interface IProduct {
-  id: string;
+  _id: string;
   title: string;
   price: number;
   description: string;
-  category: ICategory;
+  category: string;
+  tags: Array<string>;
+  image: string;
+  inStock: boolean;
+  rating: number;
 }
 
 export interface IAdmin {

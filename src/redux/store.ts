@@ -5,14 +5,19 @@ import {
   useSelector as rawUseSelector,
   TypedUseSelectorHook,
 } from "react-redux";
+import { productsApi } from "../pages/Products/Products.api";
 
 export const store = configureStore({
   reducer: {
     [categoriesApi.reducerPath]: categoriesApi.reducer,
+    [productsApi.reducerPath]: productsApi.reducer,
     antModal: antModalReducer,
   },
   middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware().concat(categoriesApi.middleware);
+    return getDefaultMiddleware().concat(
+      categoriesApi.middleware,
+      productsApi.middleware
+    );
   },
 });
 
